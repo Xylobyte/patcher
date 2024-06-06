@@ -1,0 +1,33 @@
+#recent-projects {
+    section {
+        width: 50vw;
+        height: 50vh;
+        position: relative;
+    }
+
+    li {
+        background: var(--color-background-light);
+        padding: 8px;
+
+        .head {
+            width: 100%;
+
+            h3 {
+                font-weight: bold;
+                max-width: calc(50vw / 2);
+            }
+
+            span {
+                color: var(--color-font);
+                font-size: 0.85em;
+                font-weight: 300;
+            }
+        }
+
+        .path {
+            color: var(--color-font-light);
+            font-size: 0.8em;
+            font-weight: 300;
+        }
+    }
+}
