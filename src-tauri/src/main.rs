@@ -3,32 +3,41 @@
 
 use std::sync::Mutex;
 
-use tauri::{generate_handler, Manager};
+use tauri::{AboutMetadata, generate_handler, Manager, Menu, MenuItem, Submenu};
 
-use crate::commands::get_config;
-use crate::config::{Config, ConfigState, init_config};
+use crate::commands::configs::get_recent_projects;
+use crate::configs::global::{Config, ConfigState, init_config};
 
-mod config;
+mod configs;
 mod commands;
 
 fn main() {
-    let config_state = ConfigState(Mutex::new(Config::default()));
+    let config_state = if let Ok(config) = init_config() {
+        ConfigState(Mutex::new(config))
+    } else {
+        ConfigState(Mutex::new(Config::default()))
+    };
+
+    let menu = Menu::new().add_submenu(Submenu::new(
+        "patcher",
+        Menu::new()
+            .add_native_item(MenuItem::About(
+                "Patcher".parse().unwrap(),
+                AboutMetadata::default(),
+            ))
+            .add_native_item(MenuItem::Quit),
+    ));
 
     tauri::Builder::default()
         .setup(|app| {
-            let app_conf = app.state::<ConfigState>();
-            tauri::async_runtime::spawn(async move {
-                if let Ok(config) = init_config() {
-                    println!("Loaded config: {:?}", config);
-                    let mut s = app_conf.0.lock().unwrap();
-                    *s = config;
-                }
-            });
+            let app = app.handle();
+            app.manage(config_state);
             Ok(())
         })
-        .manage(config_state)
+        .plugin(tauri_plugin_window_state::Builder::default().build())
+        .menu(menu)
         .invoke_handler(generate_handler![
-            get_config
+            get_recent_projects
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

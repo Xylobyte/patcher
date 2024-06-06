@@ -5,7 +5,7 @@ use std::sync::Mutex;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
-struct Project {
+pub struct Project {
     name: String,
     path: String,
     last_opened: String,
