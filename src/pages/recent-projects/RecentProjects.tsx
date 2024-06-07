@@ -66,18 +66,24 @@ function RecentProjects(_props: RecentProjectsProps) {
     }
 
     const execAction = async (action: string) => {
-        switch (action) {
-            case "copyPath":
-                if (contextMenu?.context) {
+        if (contextMenu?.context) {
+            switch (action) {
+                case "copyPath":
                     await writeText(contextMenu?.context.path);
                     emit(SEND_NOTIFICATION, {
                         message: "Le chemin a bien été copie",
                         type: "info"
                     } as AddNotification);
-                }
-                break;
-            case "removeFromList":
-                break;
+                    break;
+                case "removeFromList":
+                    const p = await invoke<Project[]>('remove_project', {path: contextMenu?.context.path});
+                    setProjects(p);
+                    emit(SEND_NOTIFICATION, {
+                        message: "Le projet a bien été retiré de la liste",
+                        type: "info"
+                    } as AddNotification);
+                    break;
+            }
         }
     }
 
@@ -87,46 +93,49 @@ function RecentProjects(_props: RecentProjectsProps) {
 
     return <main id="recent-projects" className="flex column align-center justify-center gap30">
         <h1>Liste de vos APIs</h1>
-        <section>
-            <Scrollbar>
-                <ul className="p-list flex column gap10">
-                    {sortProjects.map(p =>
-                        <li className="flex gap15 align-center space-between border-r-small" key={p.path}
-                            onClick={() => p.path_exists ? "" : pathError(p.path)}>
-                            <div className="flex column gap5">
-                                <div className="head flex gap10 align-center">
-                                    <h3 className="ellipsis">{p.name}</h3>-
-                                    <span>{convertISOToLocalDate(p.last_opened)}</span>
-                                </div>
-                                <span className={`path ellipsis ${p.path_exists ? 'valid' : 'invalid'}`}>
+        <section className="grid-center">
+            {sortProjects.length > 0 ?
+                <Scrollbar>
+                    <ul className="p-list flex column gap10">
+                        {sortProjects.map(p =>
+                            <li className="flex gap15 align-center space-between border-r-small" key={p.path}
+                                onClick={() => p.path_exists ? "" : pathError(p.path)}>
+                                <div className="flex column gap5">
+                                    <div className="head flex gap10 align-center">
+                                        <h3 className="ellipsis">{p.name}</h3>-
+                                        <span>{convertISOToLocalDate(p.last_opened)}</span>
+                                    </div>
+                                    <span className={`path ellipsis ${p.path_exists ? 'valid' : 'invalid'}`}>
                                     {p.path.startsWith(homePath) ? '~' + p.path.substring(homePath.length - 1) : p.path}
                                 </span>
-                            </div>
+                                </div>
 
-                            <div className="flex gap5">
-                                <SmallButton onClick={e => {
-                                    e.stopPropagation();
-                                    p.path_exists ? open(p.path) : pathError(p.path);
-                                }}>
-                                    <FolderSearch/>
-                                </SmallButton>
+                                <div className="flex gap5">
+                                    <SmallButton onClick={e => {
+                                        e.stopPropagation();
+                                        p.path_exists ? open(p.path) : pathError(p.path);
+                                    }}>
+                                        <FolderSearch/>
+                                    </SmallButton>
 
-                                <SmallButton onClick={e => {
-                                    e.stopPropagation();
-                                    setContextMenu({
-                                        x: e.currentTarget.getBoundingClientRect().left + e.currentTarget.getBoundingClientRect().width / 2,
-                                        y: e.currentTarget.getBoundingClientRect().top + e.currentTarget.getBoundingClientRect().height / 2,
-                                        items: contextMenuItems,
-                                        context: p
-                                    });
-                                }}>
-                                    <EllipsisVertical/>
-                                </SmallButton>
-                            </div>
-                        </li>
-                    )}
-                </ul>
-            </Scrollbar>
+                                    <SmallButton onClick={e => {
+                                        e.stopPropagation();
+                                        setContextMenu({
+                                            x: e.currentTarget.getBoundingClientRect().left + e.currentTarget.getBoundingClientRect().width / 2,
+                                            y: e.currentTarget.getBoundingClientRect().top + e.currentTarget.getBoundingClientRect().height / 2,
+                                            items: contextMenuItems,
+                                            context: p
+                                        });
+                                    }}>
+                                        <EllipsisVertical/>
+                                    </SmallButton>
+                                </div>
+                            </li>
+                        )}
+                    </ul>
+                </Scrollbar> :
+                <span className="no-projects">Aucun projets récents</span>
+            }
         </section>
 
         {contextMenu && <ContextMenu

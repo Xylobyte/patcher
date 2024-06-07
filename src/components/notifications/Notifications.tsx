@@ -46,7 +46,7 @@ function Notifications(_props: NotificationsProps) {
 
     return <div className="notifications-center flex column gap10 align-center">
         {notifications.map(notification =>
-            <div key={notification.endTime}
+            <div key={notification.id}
                  className={`notification b-shadow flex align-center gap10 border-r-small ${notification.type}`}>
                 {notification.type === "info" && <Info size={16}/>}
                 {notification.type === "error" && <OctagonX size={16}/>}
