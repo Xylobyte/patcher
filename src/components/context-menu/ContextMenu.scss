@@ -1,12 +1,12 @@
 .context-menu {
     position: absolute;
     background: var(--color-background-scroll);
-    z-index: 999;
+    z-index: 200;
     overflow: hidden;
 
     li {
         padding: 10px;
-        font-size: 0.85em;
+        font-size: 0.8em;
 
         &:hover {
             background: var(--color-primary-light);

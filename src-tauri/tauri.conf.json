@@ -27,6 +27,9 @@
             },
             "dialog": {
                 "message": true
+            },
+            "clipboard": {
+                "writeText": true
             }
         },
         "windows": [

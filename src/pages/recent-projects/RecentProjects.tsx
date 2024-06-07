@@ -10,6 +10,9 @@ import {homeDir} from "@tauri-apps/api/path";
 import {message} from "@tauri-apps/api/dialog";
 import {open} from '@tauri-apps/api/shell';
 import ContextMenu, {ContextMenuItem} from "../../components/context-menu/ContextMenu.tsx";
+import {writeText} from "@tauri-apps/api/clipboard";
+import {emit} from "@tauri-apps/api/event";
+import {AddNotification, SEND_NOTIFICATION} from "../../components/notifications/Notifications.tsx";
 
 export type RecentProjectsProps = {}
 
@@ -62,8 +65,20 @@ function RecentProjects(_props: RecentProjectsProps) {
         message(`The path ${p} doesn't exist!`, {title: `Path not exists`, type: "error"});
     }
 
-    const execAction = (action: string) => {
-        console.log(action);
+    const execAction = async (action: string) => {
+        switch (action) {
+            case "copyPath":
+                if (contextMenu?.context) {
+                    await writeText(contextMenu?.context.path);
+                    emit(SEND_NOTIFICATION, {
+                        message: "Le chemin a bien été copie",
+                        type: "info"
+                    } as AddNotification);
+                }
+                break;
+            case "removeFromList":
+                break;
+        }
     }
 
     const sortProjects = projects.sort((a, b) =>
