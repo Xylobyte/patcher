@@ -13,6 +13,7 @@ import ContextMenu, {ContextMenuItem} from "../../components/context-menu/Contex
 import {writeText} from "@tauri-apps/api/clipboard";
 import {emit} from "@tauri-apps/api/event";
 import {AddNotification, SEND_NOTIFICATION} from "../../components/notifications/Notifications.tsx";
+import Button from "../../components/button/Button.tsx";
 
 export type RecentProjectsProps = {}
 
@@ -93,6 +94,12 @@ function RecentProjects(_props: RecentProjectsProps) {
 
     return <main id="recent-projects" className="flex column align-center justify-center gap30">
         <h1>Liste de vos APIs</h1>
+
+        <div className="flex align-center gap10">
+            <Button isPrimary={true}>Ouvrir un projet</Button>
+            <Button>Créer un projet vide</Button>
+        </div>
+
         <section className="grid-center">
             {sortProjects.length > 0 ?
                 <Scrollbar>
