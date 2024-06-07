@@ -1,19 +1,23 @@
 :root {
     --color-primary: #1ab887;
+    --color-primary-light: rgba(26, 184, 135, 0.8);
     --color-background: #f5f5f5;
     --color-background-light: #ebebeb;
     --color-background-scroll: #dcdcdc;
     --color-font: #000000;
     --color-font-light: #454545;
+    --color-error: #c31515;
 }
 
 @media (prefers-color-scheme: dark) {
     :root {
         --color-primary: #20dda3;
+        --color-primary-light: rgba(32, 221, 163, 0.8);
         --color-background: #1b1b1b;
-        --color-background-light: #323232;
-        --color-background-scroll: #232323;
+        --color-background-light: #232323;
+        --color-background-scroll: #323232;
         --color-font: #ffffff;
         --color-font-light: #b6b6b6;
+        --color-error: #ec3e3e;
     }
 }

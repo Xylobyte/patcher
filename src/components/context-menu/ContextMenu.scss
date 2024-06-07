@@ -1,0 +1,15 @@
+.context-menu {
+    position: absolute;
+    background: var(--color-background-scroll);
+    z-index: 999;
+    overflow: hidden;
+
+    li {
+        padding: 10px;
+        font-size: 0.85em;
+
+        &:hover {
+            background: var(--color-primary-light);
+        }
+    }
+}

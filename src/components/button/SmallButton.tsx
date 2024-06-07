@@ -4,8 +4,8 @@ import React from "react";
 export interface SmallButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
-function SmallButton({children, ...props}: SmallButtonProps) {
-    return <button className="small-button grid-center" {...props}>
+function SmallButton({children, className, ...props}: SmallButtonProps) {
+    return <button className={`small-button grid-center border-r-small ${className}`} {...props}>
         {children}
     </button>
 }

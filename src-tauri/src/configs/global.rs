@@ -6,9 +6,10 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct Project {
-    name: String,
-    path: String,
-    last_opened: String,
+    pub name: String,
+    pub path: String,
+    pub last_opened: String,
+    pub path_exists: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
@@ -27,16 +28,24 @@ impl Default for Config {
 pub struct ConfigState(pub Mutex<Config>);
 
 pub fn init_config() -> Result<Config, io::Error> {
-    let config = if File::open("config.json").is_err() {
+    let config = if File::open("../config.json").is_err() {
         let data = serde_json::to_string(&Config::default())
             .expect("Could not serialize default config");
-        fs::write("config.json", &data)
+        fs::write("../config.json", &data)
             .expect("Could not write config.json");
         data
     } else {
-        fs::read_to_string("config.json")
+        fs::read_to_string("../config.json")
             .expect("Could not read config.json")
     };
-    let config = serde_json::from_str::<Config>(&config).expect("Could not deserialize config.json");
+    let config = serde_json::from_str::<Config>(&config)
+        .expect("Could not deserialize config.json");
     Ok(config)
+}
+
+pub fn save_config(config: &Config) {
+    let config = serde_json::to_string(config)
+        .expect("Could not stringify config");
+    fs::write("../config.json", &config)
+        .expect("Could not write config.json");
 }
