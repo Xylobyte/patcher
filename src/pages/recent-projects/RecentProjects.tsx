@@ -88,6 +88,10 @@ function RecentProjects(_props: RecentProjectsProps) {
         }
     }
 
+    const openProject = (p: Project) => {
+        // TODO: Open project
+    }
+
     const sortProjects = projects.sort((a, b) =>
         new Date(b.last_opened).getTime() - new Date(a.last_opened).getTime()
     );
@@ -106,15 +110,15 @@ function RecentProjects(_props: RecentProjectsProps) {
                     <ul className="p-list flex column gap10">
                         {sortProjects.map(p =>
                             <li className="flex gap15 align-center space-between border-r-small" key={p.path}
-                                onClick={() => p.path_exists ? "" : pathError(p.path)}>
+                                onClick={() => p.path_exists ? openProject(p) : pathError(p.path)}>
                                 <div className="flex column gap5">
                                     <div className="head flex gap10 align-center">
                                         <h3 className="ellipsis">{p.name}</h3>-
                                         <span>{convertISOToLocalDate(p.last_opened)}</span>
                                     </div>
                                     <span className={`path ellipsis ${p.path_exists ? 'valid' : 'invalid'}`}>
-                                    {p.path.startsWith(homePath) ? '~' + p.path.substring(homePath.length - 1) : p.path}
-                                </span>
+                                        {p.path.startsWith(homePath) ? '~' + p.path.substring(homePath.length - 1) : p.path}
+                                    </span>
                                 </div>
 
                                 <div className="flex gap5">

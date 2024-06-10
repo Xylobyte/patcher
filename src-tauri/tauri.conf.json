@@ -26,7 +26,8 @@
                 "all": true
             },
             "dialog": {
-                "message": true
+                "message": true,
+                "open": true
             },
             "clipboard": {
                 "writeText": true

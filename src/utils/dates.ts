@@ -8,5 +8,5 @@ export const convertISOToLocalDate = (isoDateString: string) => {
         minute: 'numeric',
         second: 'numeric'
     };
-    return date.toLocaleDateString(undefined, options);
+    return date.toLocaleDateString(undefined, options as any);
 }
