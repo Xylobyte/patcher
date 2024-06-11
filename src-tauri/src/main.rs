@@ -42,5 +42,5 @@ fn main() {
             get_recent_projects, remove_project
         ])
         .run(context)
-        .expect("error while running tauri application");
+        .expect("Error while running tauri application");
 }

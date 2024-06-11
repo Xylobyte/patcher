@@ -7,7 +7,7 @@ import SmallButton from "../../components/button/SmallButton.tsx";
 import Scrollbar from "../../components/scrollbar/Scrollbar.tsx";
 import {convertISOToLocalDate} from "../../utils/dates.ts";
 import {homeDir} from "@tauri-apps/api/path";
-import {message} from "@tauri-apps/api/dialog";
+import {message, open as pickFolder} from "@tauri-apps/api/dialog";
 import {open} from '@tauri-apps/api/shell';
 import ContextMenu, {ContextMenuItem} from "../../components/context-menu/ContextMenu.tsx";
 import {writeText} from "@tauri-apps/api/clipboard";
@@ -88,8 +88,19 @@ function RecentProjects(_props: RecentProjectsProps) {
         }
     }
 
-    const openProject = (p: Project) => {
-        // TODO: Open project
+    const openFolder = async () => {
+        const select = await pickFolder({
+            directory: true,
+            multiple: false,
+            title: "Choisir un dossier de projet",
+            defaultPath: homePath
+        });
+
+        await openProject(select as string);
+    }
+
+    const openProject = async (p: string) => {
+        
     }
 
     const sortProjects = projects.sort((a, b) =>
@@ -100,7 +111,7 @@ function RecentProjects(_props: RecentProjectsProps) {
         <h1>Liste de vos APIs</h1>
 
         <div className="flex align-center gap10">
-            <Button isPrimary={true}>Ouvrir un projet</Button>
+            <Button isPrimary={true} onClick={openFolder}>Ouvrir un projet</Button>
             <Button>Créer un projet vide</Button>
         </div>
 
@@ -110,7 +121,7 @@ function RecentProjects(_props: RecentProjectsProps) {
                     <ul className="p-list flex column gap10">
                         {sortProjects.map(p =>
                             <li className="flex gap15 align-center space-between border-r-small" key={p.path}
-                                onClick={() => p.path_exists ? openProject(p) : pathError(p.path)}>
+                                onClick={() => p.path_exists ? openProject(p.path) : pathError(p.path)}>
                                 <div className="flex column gap5">
                                     <div className="head flex gap10 align-center">
                                         <h3 className="ellipsis">{p.name}</h3>-
