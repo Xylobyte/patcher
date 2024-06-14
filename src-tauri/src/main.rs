@@ -5,10 +5,10 @@ use std::sync::Mutex;
 
 use tauri::{AboutMetadata, generate_handler, Manager, Menu, MenuItem, Submenu};
 
-use crate::commands::configs::{get_recent_projects, remove_project};
-use crate::configs::global::{Config, ConfigState, init_config};
+use crate::commands::projects::{get_recent_projects, remove_project};
+use crate::core::configs::global_config::{Config, ConfigState, init_config};
 
-mod configs;
+mod core;
 mod commands;
 
 fn main() {

@@ -8,7 +8,7 @@ use tauri::utils::assets::EmbeddedAssets;
 pub const GLOBAL_CONFIG_FILE: &str = "global_config.json";
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
-pub struct Project {
+pub struct RecentProject {
     pub name: String,
     pub path: String,
     pub last_opened: String,
@@ -17,7 +17,7 @@ pub struct Project {
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct Config {
-    pub recent_projects: Vec<Project>,
+    pub recent_projects: Vec<RecentProject>,
 }
 
 impl Default for Config {

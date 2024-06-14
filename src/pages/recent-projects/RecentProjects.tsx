@@ -99,8 +99,8 @@ function RecentProjects(_props: RecentProjectsProps) {
         await openProject(select as string);
     }
 
-    const openProject = async (p: string) => {
-        
+    const openProject = async (_p: string) => {
+
     }
 
     const sortProjects = projects.sort((a, b) =>
