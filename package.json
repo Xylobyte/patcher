@@ -11,8 +11,10 @@
     },
     "dependencies": {
         "@tauri-apps/api": "^1",
+        "lucide-vue-next": "^0.395.0",
         "sass": "^1.77.5",
-        "vue": "^3.3.4"
+        "vue": "^3.3.4",
+        "vue-router": "^4.3.3"
     },
     "devDependencies": {
         "@tauri-apps/cli": "^1",

@@ -1,0 +1,1 @@
+export const SEND_NOTIFICATION = "ui:add_notification";
