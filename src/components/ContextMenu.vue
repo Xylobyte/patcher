@@ -7,7 +7,7 @@ interface ContextMenuItem {
 }
 
 interface ContextMenuProps {
-    items: ContextMenuItem[];
+    items: ContextMenuItem[]
     x: number
     y: number
     onAction: (action: string) => void
@@ -15,18 +15,19 @@ interface ContextMenuProps {
 }
 
 const props = defineProps<ContextMenuProps>()
+
 const menuRef = ref<HTMLButtonElement | null>(null)
 
 const style = computed(() => ({
     top: props.y,
     left: props.x
-} as CSSProperties));
+} as CSSProperties))
 
 onMounted(() => {
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside)
 })
 onUnmounted(() => {
-    document.removeEventListener('mousedown', handleClickOutside);
+    document.removeEventListener('mousedown', handleClickOutside)
 })
 
 const handleClickOutside = (event: MouseEvent) => {
@@ -37,7 +38,10 @@ const handleClickOutside = (event: MouseEvent) => {
 </script>
 
 <template>
-    <div ref="menuRef" :style="style" class="context-menu b-shadow border-r-small">
+    <div
+        ref="menuRef"
+        :style="style"
+        class="context-menu b-shadow border-r-small">
         <ul class="flex column">
             <li v-for="item in items" @click="() => onAction(item.action)">
                 {{ item.action }}

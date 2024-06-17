@@ -1,5 +1,5 @@
 export const convertISOToLocalDate = (isoDateString: string) => {
-    const date = new Date(isoDateString);
+    const date = new Date(isoDateString)
     const options = {
         year: 'numeric',
         month: 'long',
@@ -7,6 +7,6 @@ export const convertISOToLocalDate = (isoDateString: string) => {
         hour: 'numeric',
         minute: 'numeric',
         second: 'numeric'
-    };
-    return date.toLocaleDateString(undefined, options as any);
+    }
+    return date.toLocaleDateString(undefined, options as any)
 }

@@ -1,14 +1,14 @@
 <script lang="ts" setup>
-import {ButtonHTMLAttributes} from "vue"
-
 defineProps<{
     isPrimary?: boolean
 }>()
 </script>
 
 <template>
-    <button :class="{isPrimary: isPrimary}" class="flex align-center border-r-small"
-            v-bind="$attrs as ButtonHTMLAttributes">
+    <button
+        :class="{isPrimary: isPrimary}"
+        class="flex align-center border-r-small"
+        v-bind="$attrs">
         <slot/>
     </button>
 </template>
