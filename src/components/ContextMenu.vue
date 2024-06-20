@@ -22,7 +22,6 @@ const style = computed(() => ({
 } as CSSProperties))
 
 onMounted(() => {
-    console.log(style.value)
     document.addEventListener('mousedown', handleClickOutside)
 })
 onUnmounted(() => {

@@ -9,7 +9,10 @@ const notifications = ref<Notification[]>([])
 
 let unsubscribe: UnlistenFn
 onMounted(async () => {
+    console.log("Notification listen start")
+
     unsubscribe = await listen<AddNotification>(SEND_NOTIFICATION, (e) => {
+        console.log("Notification")
         const id = Date.now()
         notifications.value.unshift({
             message: e.payload.message,
@@ -28,20 +31,38 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <div class="notifications-center flex column gap10 align-center">
-        <div
-            v-for="notification in notifications"
-            :key="notification.id"
-            class="notification b-shadow flex align-center gap10 border-r-small {{notification.type}}">
-            <Info v-if="notification.type === 'info'" :size="16"/>
-            <OctagonX v-else-if="notification.type === 'error'" :size="16"/>
-            <CircleCheck v-else-if="notification.type === 'success'" :size="16"/>
-            <span>{{ notification.message }}</span>
-        </div>
+    <div class="notifications-center flex column align-center">
+        <TransitionGroup class="flex column gap10" name="notification" tag="div">
+            <div
+                v-for="notification in notifications"
+                :key="notification.id"
+                :class="[notification.type]"
+                class="notification b-shadow flex align-center gap10 border-r-small"
+            >
+                <Info v-if="notification.type === 'info'" :size="16"/>
+                <OctagonX v-else-if="notification.type === 'error'" :size="16"/>
+                <CircleCheck v-else-if="notification.type === 'success'" :size="16"/>
+                <span>{{ notification.message }}</span>
+            </div>
+        </TransitionGroup>
     </div>
 </template>
 
 <style lang="scss" scoped>
+.notification-move,
+.notification-enter-active,
+.notification-leave-active {
+    transition: all 0.4s ease;
+}
+.notification-enter-from {
+    opacity: 0;
+    transform: translateY(-100%);
+}
+.notification-leave-to {
+    opacity: 0;
+    transform: translateX(-30px);
+}
+
 .notifications-center {
     position: fixed;
     top: 20px;
@@ -54,17 +75,10 @@ onUnmounted(() => {
         pointer-events: all;
         padding: 10px;
         font-size: 0.9em;
-        animation: forwards popupFromTop 0.3s;
 
         &.info {
             background: var(--color-background-scroll);
             color: var(--color-font-light);
-        }
-    }
-
-    @keyframes popupFromTop {
-        from {
-            transform: translateY(-100%);
         }
     }
 }

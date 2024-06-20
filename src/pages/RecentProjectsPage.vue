@@ -58,8 +58,8 @@ const execAction = async (action: string) => {
 		switch (action) {
 			case "copyPath":
 				await writeText(contextMenu.value?.context.path)
-				emit(SEND_NOTIFICATION, {
-					message: "Le chemin a bien été copie",
+                emit(SEND_NOTIFICATION, {
+					message: "Le chemin a bien été copié",
 					type: "info"
 				} as AddNotification)
 				break
@@ -72,6 +72,8 @@ const execAction = async (action: string) => {
 				break
 		}
 	}
+
+    contextMenu.value = null
 }
 
 const openFolder = async () => {
@@ -136,7 +138,7 @@ const showContextMenu = (e: Event, context: Project) => {
 								<FolderSearch/>
 							</SmallButton>
 
-							<SmallButton @click.stop="showContextMenu">
+							<SmallButton @click.stop="e => showContextMenu(e, p)">
 								<EllipsisVertical/>
 							</SmallButton>
 						</div>
@@ -153,10 +155,7 @@ const showContextMenu = (e: Event, context: Project) => {
 			:items="contextMenu.items"
 			:x="contextMenu.x"
 			:y="contextMenu.y"
-            @action="action => {
-                execAction(action)
-                contextMenu = null
-            }"
+            @action="execAction"
 			@close="contextMenu = null"
 		/>
 	</main>
