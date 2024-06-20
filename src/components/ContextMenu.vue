@@ -1,29 +1,28 @@
 <script lang="ts" setup>
 import {computed, CSSProperties, onMounted, onUnmounted, ref} from "vue"
-
-interface ContextMenuItem {
-    name: string
-    action: string
-}
+import {ContextMenuItem} from "../interfaces/context-menu.ts"
 
 interface ContextMenuProps {
     items: ContextMenuItem[]
     x: number
     y: number
-    onAction: (action: string) => void
-    onClose: () => void
 }
 
 const props = defineProps<ContextMenuProps>()
+const emit = defineEmits<{
+    close: []
+    action: [action: string]
+}>()
 
 const menuRef = ref<HTMLButtonElement | null>(null)
 
 const style = computed(() => ({
-    top: props.y,
-    left: props.x
+    top: props.y + "px",
+    left: props.x + "px"
 } as CSSProperties))
 
 onMounted(() => {
+    console.log(style.value)
     document.addEventListener('mousedown', handleClickOutside)
 })
 onUnmounted(() => {
@@ -32,7 +31,7 @@ onUnmounted(() => {
 
 const handleClickOutside = (event: MouseEvent) => {
     if (menuRef.value && !menuRef.value.contains(event.target as Node)) {
-        props.onClose()
+        emit('close')
     }
 }
 </script>
@@ -41,10 +40,11 @@ const handleClickOutside = (event: MouseEvent) => {
     <div
         ref="menuRef"
         :style="style"
-        class="context-menu b-shadow border-r-small">
+        class="context-menu b-shadow border-r-small"
+    >
         <ul class="flex column">
-            <li v-for="item in items" @click="() => onAction(item.action)">
-                {{ item.action }}
+            <li v-for="item in items" @click="() => $emit('action', item.action)">
+                {{ item.name }}
             </li>
         </ul>
     </div>

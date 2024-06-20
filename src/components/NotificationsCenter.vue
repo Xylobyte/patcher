@@ -2,7 +2,7 @@
 import {onMounted, onUnmounted, ref} from "vue"
 import {AddNotification, Notification} from "../interfaces/notifications.ts"
 import {listen, UnlistenFn} from "@tauri-apps/api/event"
-import {SEND_NOTIFICATION} from "../utils/events-names.ts"
+import {SEND_NOTIFICATION} from "../utils/data/events-names.ts"
 import {CircleCheck, Info, OctagonX} from "lucide-vue-next"
 
 const notifications = ref<Notification[]>([])

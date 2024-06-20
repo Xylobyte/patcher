@@ -6,7 +6,7 @@ defineProps<{
 
 <template>
     <button
-        :class="{isPrimary: isPrimary}"
+        :class="{primary: isPrimary}"
         class="flex align-center border-r-small"
         v-bind="$attrs">
         <slot/>
