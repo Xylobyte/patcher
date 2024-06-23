@@ -1,9 +1,8 @@
 use std::{fs, io};
+use std::path::PathBuf;
 use std::sync::Mutex;
 
 use serde::{Deserialize, Serialize};
-use tauri::Context;
-use tauri::utils::assets::EmbeddedAssets;
 
 pub const GLOBAL_CONFIG_FILE: &str = "global_config.json";
 
@@ -30,10 +29,15 @@ impl Default for Config {
 
 pub struct ConfigState(pub Mutex<Config>);
 
-pub fn init_config(context: &Context<EmbeddedAssets>) -> Result<Config, io::Error> {
-    let mut config_path = tauri::api::path::app_config_dir(context.config())
+pub fn get_config_path(app_handle: &tauri::AppHandle) -> PathBuf {
+    let mut path = app_handle.path_resolver().app_config_dir()
         .expect("Could not get app config dir");
-    config_path.push(GLOBAL_CONFIG_FILE);
+    path.push(GLOBAL_CONFIG_FILE);
+    path
+}
+
+pub fn init_config(app_handle: &tauri::AppHandle) -> Result<Config, io::Error> {
+    let config_path = get_config_path(app_handle);
 
     let config = if !config_path.exists() {
         let data = serde_json::to_string(&Config::default())

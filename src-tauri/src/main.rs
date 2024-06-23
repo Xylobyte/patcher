@@ -5,7 +5,7 @@ use std::sync::Mutex;
 
 use tauri::{AboutMetadata, generate_handler, Manager, Menu, MenuItem, Submenu};
 
-use crate::commands::projects::{get_recent_projects, remove_project};
+use crate::commands::projects::{get_recent_projects, open_project, remove_project};
 use crate::core::configs::global_config::{Config, ConfigState, init_config};
 
 mod core;
@@ -13,12 +13,6 @@ mod commands;
 
 fn main() {
     let context = tauri::generate_context!();
-
-    let config_state = if let Ok(config) = init_config(&context) {
-        ConfigState(Mutex::new(config))
-    } else {
-        ConfigState(Mutex::new(Config::default()))
-    };
 
     let menu = Menu::new().add_submenu(Submenu::new(
         "patcher",
@@ -33,13 +27,18 @@ fn main() {
     tauri::Builder::default()
         .setup(|app| {
             let app = app.handle();
+            let config_state = if let Ok(config) = init_config(&app) {
+                ConfigState(Mutex::new(config))
+            } else {
+                ConfigState(Mutex::new(Config::default()))
+            };
             app.manage(config_state);
             Ok(())
         })
         .plugin(tauri_plugin_window_state::Builder::default().build())
         .menu(menu)
         .invoke_handler(generate_handler![
-            get_recent_projects, remove_project
+            get_recent_projects, remove_project, open_project
         ])
         .run(context)
         .expect("Error while running tauri application");

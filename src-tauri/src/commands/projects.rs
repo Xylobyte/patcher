@@ -1,14 +1,19 @@
 use std::path::PathBuf;
 
-use crate::core::configs::global_config::{ConfigState, GLOBAL_CONFIG_FILE, RecentProject, save_config};
+use serde::Serialize;
 
-enum ProjectError {
+use crate::core::configs::global_config::{ConfigState, get_config_path, RecentProject, save_config};
+
+#[derive(Debug, Serialize, thiserror::Error)]
+pub enum ProjectError {
+    #[error("Project path invalid")]
     InvalidPath,
+    #[error("Project invalid")]
     InvalidProject,
 }
 
 #[tauri::command]
-pub async fn get_recent_projects(state: tauri::State<'_, ConfigState>) -> Result<Vec<RecentProject>, ()> {
+pub async fn get_recent_projects(state: tauri::State<'_, ConfigState>) -> Result<Vec<RecentProject>, ProjectError> {
     let mut config = state.0.lock().unwrap();
     config.recent_projects = config.recent_projects
         .iter()
@@ -22,9 +27,8 @@ pub async fn get_recent_projects(state: tauri::State<'_, ConfigState>) -> Result
 }
 
 #[tauri::command]
-pub async fn remove_project(state: tauri::State<'_, ConfigState>, app_handle: tauri::AppHandle, path: String) -> Result<Vec<RecentProject>, ()> {
-    let mut conf_dir = app_handle.path_resolver().app_config_dir().unwrap();
-    conf_dir.push(GLOBAL_CONFIG_FILE);
+pub async fn remove_project(state: tauri::State<'_, ConfigState>, app_handle: tauri::AppHandle, path: String) -> Result<Vec<RecentProject>, ProjectError> {
+    let conf_dir = get_config_path(&app_handle);
 
     let mut config = state.0.lock().unwrap();
     config.recent_projects = config.recent_projects

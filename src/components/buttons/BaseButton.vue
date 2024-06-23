@@ -15,7 +15,7 @@ defineProps<{
 
 <style lang="scss" scoped>
 button {
-    padding: 6px 12px;
+    padding: 8px 12px;
     color: var(--color-font);
     background: var(--color-background-button);
 
