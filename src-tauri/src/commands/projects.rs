@@ -4,11 +4,9 @@ use serde::Serialize;
 
 use crate::core::configs::global_config::{ConfigState, get_config_path, RecentProject, save_config};
 
-#[derive(Debug, Serialize, thiserror::Error)]
+#[derive(Debug, Serialize)]
 pub enum ProjectError {
-    #[error("Project path invalid")]
     InvalidPath,
-    #[error("Project invalid")]
     InvalidProject,
 }
 

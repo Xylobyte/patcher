@@ -8,16 +8,16 @@ pub struct ProjectInfo {
     pub name: String,
     pub description: String,
     pub last_edited: String,
-    pub config: ProjectConfig,
+    pub config: ProjectConfig
 }
 
 impl Default for ProjectInfo {
     fn default() -> Self {
         ProjectInfo {
-            name: "New api".to_string(),
+            name: String::from("New api"),
             description: String::new(),
             last_edited: <SystemTime as Into<DateTime<Utc>>>::into(SystemTime::now()).to_rfc3339(),
-            config: ProjectConfig::default(),
+            config: ProjectConfig::default()
         }
     }
 }

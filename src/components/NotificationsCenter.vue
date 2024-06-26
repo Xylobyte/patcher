@@ -52,7 +52,8 @@ onUnmounted(() => {
 .notification-move,
 .notification-enter-active,
 .notification-leave-active {
-    transition: all 0.4s ease;
+    transition: 0.4s ease;
+    transition-property: opacity, transform;
 }
 .notification-enter-from {
     opacity: 0;
