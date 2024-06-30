@@ -91,7 +91,7 @@ const openProject = async (p: string) => {
     try {
         await invoke<void>('open_project', {path: p})
     } catch (e) {
-        alert(e)
+        console.log(e)
     }
 }
 

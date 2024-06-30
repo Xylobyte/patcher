@@ -3,6 +3,8 @@ use std::path::PathBuf;
 use serde::Serialize;
 
 use crate::core::configs::global_config::{ConfigState, get_config_path, RecentProject, save_config};
+use crate::core::projects::project_data::ProjectData;
+use crate::core::projects::project_info::ProjectInfo;
 
 #[derive(Debug, Serialize)]
 pub enum ProjectError {
@@ -40,6 +42,6 @@ pub async fn remove_project(state: tauri::State<'_, ConfigState>, app_handle: ta
 }
 
 #[tauri::command]
-pub async fn open_project(state: tauri::State<'_, ConfigState>, path: String) -> Result<(), ProjectError> {
-    Ok(())
+pub async fn open_project(state: tauri::State<'_, ConfigState>, path: String) -> Result<(), (ProjectInfo, ProjectData)> {
+    Err((ProjectInfo::default(), ProjectData::default()))
 }
