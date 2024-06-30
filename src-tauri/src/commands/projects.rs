@@ -43,5 +43,9 @@ pub async fn remove_project(state: tauri::State<'_, ConfigState>, app_handle: ta
 
 #[tauri::command]
 pub async fn open_project(state: tauri::State<'_, ConfigState>, path: String) -> Result<(), (ProjectInfo, ProjectData)> {
-    Err((ProjectInfo::default(), ProjectData::default()))
+    let mut path_buf = PathBuf::from(path);
+    path_buf.push(".patcher");
+    let conf_path = path_buf.join("config.json");
+    let data_path = path_buf.join("data.json");
+    Ok(())
 }
