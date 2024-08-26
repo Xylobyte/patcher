@@ -3,7 +3,7 @@ use std::path::PathBuf;
 
 use serde::Serialize;
 
-use crate::core::configs::global_config::{ConfigState, get_config_path, RecentProject, save_config};
+use crate::core::configs::global_config::{get_config_path, save_config, ConfigState, RecentProject};
 use crate::core::projects::project_data::ProjectData;
 use crate::core::projects::project_info::ProjectInfo;
 
@@ -46,22 +46,25 @@ pub async fn remove_project(state: tauri::State<'_, ConfigState>, app_handle: ta
 
 #[tauri::command]
 pub async fn open_project(_state: tauri::State<'_, ConfigState>, path: String) -> Result<(), (ProjectInfo, ProjectData)> {
-    let mut path_buf = PathBuf::from(path).join(".patcher");
+    let path_buf = PathBuf::from(path);
+    let error_response = (ProjectInfo::default_with_name(format!("{} API", path_buf.file_name().unwrap().to_str().unwrap())), ProjectData::default());
+    let path_buf = path_buf.join(".patcher");
     let info_path = path_buf.join("config.json");
     let data_path = path_buf.join("data.json");
+    
+    if !info_path.exists() || !data_path.exists() {
+        return Err(error_response);
+    }
 
-    fn read_file<T: Default + for<'d> serde::Deserialize<'d>>(path: &PathBuf) -> Result<T, (ProjectInfo, ProjectData)> {
+    fn read_file<T: Default + for<'d> serde::Deserialize<'d>>(path: &PathBuf, error_r: (ProjectInfo, ProjectData)) -> Result<T, (ProjectInfo, ProjectData)> {
         fs::read_to_string(path)
             .map_err(|_| (ProjectInfo::default(), ProjectData::default()))
-            .and_then(|content| serde_json::from_str(&content).map_err(|_| (ProjectInfo::default(), ProjectData::default())))
+            .and_then(|content| serde_json::from_str(&content)
+                .map_err(|_| error_r))
     }
 
-    if !info_path.exists() || !data_path.exists() {
-        return Err((ProjectInfo::default(), ProjectData::default()));
-    }
-
-    let info: ProjectInfo = read_file(&info_path)?;
-    let data: ProjectData = read_file(&data_path)?;
+    let _info: ProjectInfo = read_file(&info_path, error_response.clone())?;
+    let _data: ProjectData = read_file(&data_path, error_response.clone())?;
 
     Ok(())
 }

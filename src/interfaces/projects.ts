@@ -8,17 +8,17 @@ export interface ApiRequest {
 }
 
 export interface ProjectData {
-    api_tree: ApiRequest[],
-    root_url: string,
+    api_tree: ApiRequest[]
 }
 
 export interface ProjectConfig {
-    use_folder_as_url: boolean,
+    use_folders_as_url: boolean,
 }
 
 export interface ProjectInfo {
     name: string,
     description: string,
     last_edited: string,
+    root_url: string,
     config: ProjectConfig
 }

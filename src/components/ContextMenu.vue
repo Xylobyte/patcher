@@ -42,7 +42,7 @@ const handleClickOutside = (event: MouseEvent) => {
         class="context-menu b-shadow border-r-small"
     >
         <ul class="flex column">
-            <li v-for="item in items" @click="() => $emit('action', item.action)">
+            <li v-for="item in items" @click="$emit('action', item.action)">
                 {{ item.name }}
             </li>
         </ul>

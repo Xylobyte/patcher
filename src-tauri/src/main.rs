@@ -3,13 +3,13 @@
 
 use std::sync::Mutex;
 
-use tauri::{AboutMetadata, generate_handler, Manager, Menu, MenuItem, Submenu};
+use tauri::{generate_handler, AboutMetadata, Manager, Menu, MenuItem, Submenu};
 
 use crate::commands::projects::{get_recent_projects, open_project, remove_project};
-use crate::core::configs::global_config::{Config, ConfigState, init_config};
+use crate::core::configs::global_config::{init_config, Config, ConfigState};
 
-mod core;
 mod commands;
+mod core;
 
 fn main() {
     let context = tauri::generate_context!();
@@ -38,7 +38,9 @@ fn main() {
         .plugin(tauri_plugin_window_state::Builder::default().build())
         .menu(menu)
         .invoke_handler(generate_handler![
-            get_recent_projects, remove_project, open_project
+            get_recent_projects,
+            remove_project,
+            open_project
         ])
         .run(context)
         .expect("Error while running tauri application");

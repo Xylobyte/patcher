@@ -19,7 +19,7 @@ impl Default for ApiRequest {
             documentation: String::new(),
             url: String::new(),
             is_folder: false,
-            children: Vec::new()
+            children: Vec::new(),
         }
     }
 }
@@ -27,14 +27,12 @@ impl Default for ApiRequest {
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct ProjectData {
     pub api_tree: Vec<ApiRequest>,
-    pub root_url: String,
 }
 
 impl Default for ProjectData {
     fn default() -> Self {
         ProjectData {
             api_tree: Vec::new(),
-            root_url: String::from("http://localhost:8000"),
         }
     }
 }

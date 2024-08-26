@@ -3,20 +3,18 @@ import {computed, onMounted, onUnmounted, ref} from "vue"
 import {Project} from "../interfaces/configs.ts"
 import {homeDir} from "@tauri-apps/api/path"
 import {invoke} from "@tauri-apps/api/tauri"
-import {message, open as pickFolder} from "@tauri-apps/api/dialog"
+import {open as pickFolder} from "@tauri-apps/api/dialog"
 import {writeText} from "@tauri-apps/api/clipboard"
 import {emit} from "@tauri-apps/api/event"
 import {SEND_NOTIFICATION} from "../utils/data/events-names.ts"
 import {AddNotification} from "../interfaces/notifications.ts"
 import BaseButton from "../components/buttons/BaseButton.vue"
 import CustomScrollbar from "../components/CustomScrollbar.vue"
-import {convertISOToLocalDate} from "../utils/dates.ts"
-import SmallButton from "../components/buttons/SmallButton.vue"
-import {EllipsisVertical, FolderSearch} from "lucide-vue-next"
-import {open} from '@tauri-apps/api/shell'
 import {contextMenuItems} from "../utils/data/context-menu-items.ts"
 import {ContextMenuItem} from "../interfaces/context-menu.ts"
 import ContextMenu from "../components/ContextMenu.vue"
+import RecentProjectListItem from "../components/lists/RecentProjectListItem.vue"
+import {ProjectData, ProjectInfo} from "../interfaces/projects.ts"
 
 const projects = ref<Project[]>([])
 const sortedProjects = computed(() => projects.value.sort((a, b) =>
@@ -48,10 +46,6 @@ onMounted(async () => {
 onUnmounted(() => {
     window.removeEventListener('focus', refreshProjects)
 })
-
-const pathError = (p: string) => {
-    message(`The path ${p} doesn't exist!`, {title: `Path not exists`, type: "error"})
-}
 
 const execAction = async (action: string) => {
     if (contextMenu.value?.context) {
@@ -91,7 +85,8 @@ const openProject = async (p: string) => {
     try {
         await invoke<void>('open_project', {path: p})
     } catch (e) {
-        console.log(e)
+        const info = (e as [ProjectInfo, ProjectData])[0];
+        console.log(info)
     }
 }
 
@@ -115,39 +110,21 @@ const showContextMenu = (e: Event, context: Project) => {
                 Ouvrir un projet
             </BaseButton>
             <BaseButton>
-                Créer un projet vide
+                Nouveau projet
             </BaseButton>
         </div>
 
         <section class="grid-center">
             <CustomScrollbar v-if="sortedProjects.length > 0">
                 <ul class="p-list flex column gap10">
-                    <li
+                    <RecentProjectListItem
                         v-for="p in sortedProjects"
                         :key="p.path"
-                        class="flex gap15 align-center space-between border-r-small"
-                        @click="() => p.path_exists ? openProject(p.path) : pathError(p.path)"
-                    >
-                        <div class="flex column gap5">
-                            <div class="head flex gap10 align-center">
-                                <h3 class="ellipsis">{{ p.name }}</h3>-
-                                <span>{{ convertISOToLocalDate(p.last_opened) }}</span>
-                            </div>
-                            <span :class="[p.path_exists ? 'valid' : 'invalid']" class="path ellipsis">
-                                {{ p.path.startsWith(homePath) ? '~' + p.path.substring(homePath.length - 1) : p.path }}
-                            </span>
-                        </div>
-
-                        <div class="flex gap5">
-                            <SmallButton @click.stop="p.path_exists ? open(p.path) : pathError(p.path)">
-                                <FolderSearch/>
-                            </SmallButton>
-
-                            <SmallButton @click.stop="e => showContextMenu(e, p)">
-                                <EllipsisVertical/>
-                            </SmallButton>
-                        </div>
-                    </li>
+                        :home-path="homePath"
+                        :project="p"
+                        @openProject="openProject"
+                        @showContextMenu="showContextMenu"
+                    />
                 </ul>
             </CustomScrollbar>
             <span v-else class="no-projects">
@@ -173,42 +150,6 @@ const showContextMenu = (e: Event, context: Project) => {
         min-width: 550px;
         height: 50vh;
         position: relative;
-    }
-
-    .p-list li {
-        background: var(--color-background-light);
-        padding: 8px;
-
-        &:hover {
-            background: var(--color-background-scroll);
-        }
-
-        .head {
-            width: 100%;
-            height: 30px;
-
-            h3 {
-                font-weight: bold;
-                max-width: calc(50vw / 2);
-            }
-
-            span {
-                color: var(--color-font-light);
-                font-size: 0.85em;
-                font-weight: 300;
-            }
-        }
-
-        .path {
-            color: var(--color-font-light);
-            font-size: 0.75em;
-            font-weight: 300;
-            max-width: calc(50vw / 1.3);
-
-            &.invalid {
-                color: var(--color-error);
-            }
-        }
     }
 
     .no-projects {
