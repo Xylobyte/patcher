@@ -15,6 +15,7 @@ import {ContextMenuItem} from "../interfaces/context-menu.ts"
 import ContextMenu from "../components/ContextMenu.vue"
 import RecentProjectListItem from "../components/lists/RecentProjectListItem.vue"
 import {ProjectData, ProjectInfo} from "../interfaces/projects.ts"
+import BaseModal from "../components/BaseModal.vue"
 
 const projects = ref<Project[]>([])
 const sortedProjects = computed(() => projects.value.sort((a, b) =>
@@ -28,6 +29,8 @@ const contextMenu = ref<{
     items: ContextMenuItem[]
     context: Project
 } | null>(null)
+
+const modalInitProject = ref<ProjectInfo | null>(null)
 
 const refreshProjects = async () => {
     try {
@@ -85,8 +88,7 @@ const openProject = async (p: string) => {
     try {
         await invoke<void>('open_project', {path: p})
     } catch (e) {
-        const info = (e as [ProjectInfo, ProjectData])[0];
-        console.log(info)
+        modalInitProject.value = (e as [ProjectInfo, ProjectData])[0]
     }
 }
 
@@ -103,6 +105,15 @@ const showContextMenu = (e: Event, context: Project) => {
 
 <template>
     <main id="recent-projects" class="flex column align-center justify-center gap30">
+        <BaseModal
+            v-if="!!modalInitProject"
+            title="Nouveau projet"
+            @close="modalInitProject = null"
+        >
+            <p>Info</p>
+            <p>{{ modalInitProject.name }}</p>
+        </BaseModal>
+
         <h1>Liste de vos APIs</h1>
 
         <div class="flex align-center gap10">
