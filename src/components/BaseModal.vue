@@ -56,8 +56,8 @@ const handleKeydown = (e: KeyboardEvent) => {
 
 .modal {
     padding: 20px;
-    max-height: 80vh;
-    max-width: 80vw;
+    max-height: 90vh;
+    max-width: 90vw;
     background: var(--color-background);
 
     .actions {

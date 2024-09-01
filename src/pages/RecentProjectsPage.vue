@@ -16,6 +16,10 @@ import ContextMenu from "../components/ContextMenu.vue"
 import RecentProjectListItem from "../components/lists/RecentProjectListItem.vue"
 import {ProjectData, ProjectInfo} from "../interfaces/projects.ts"
 import BaseModal from "../components/BaseModal.vue"
+import SingleLineInput from "../components/inputs/SingleLineInput.vue";
+import LineSeparator from "../components/LineSeparator.vue";
+import SwitchInput from "../components/inputs/SwitchInput.vue";
+import PathSelectInput from "../components/inputs/PathSelectInput.vue";
 
 const projects = ref<Project[]>([])
 const sortedProjects = computed(() => projects.value.sort((a, b) =>
@@ -30,7 +34,7 @@ const contextMenu = ref<{
     context: Project
 } | null>(null)
 
-const modalInitProject = ref<ProjectInfo | null>(null)
+const modalInitProject = ref<{path: string, projectInfo: ProjectInfo} | null>(null)
 
 const refreshProjects = async () => {
     try {
@@ -88,7 +92,10 @@ const openProject = async (p: string) => {
     try {
         await invoke<void>('open_project', {path: p})
     } catch (e) {
-        modalInitProject.value = (e as [ProjectInfo, ProjectData])[0]
+        modalInitProject.value = {
+            path: p,
+            projectInfo: (e as [ProjectInfo, ProjectData])[0]
+        }
     }
 }
 
@@ -110,8 +117,39 @@ const showContextMenu = (e: Event, context: Project) => {
             title="Nouveau projet"
             @close="modalInitProject = null"
         >
-            <p>Info</p>
-            <p>{{ modalInitProject.name }}</p>
+            <div class="flex gap10">
+                <div class="flex column gap10">
+                    <SingleLineInput
+                        v-model="modalInitProject.projectInfo.name"
+                        :auto-focus="true"
+                        label="Nom du projet"
+                    />
+                    <SingleLineInput
+                        v-model="modalInitProject.projectInfo.description"
+                        :auto-focus="true"
+                        label="Description du projet"
+                    />
+                </div>
+
+                <LineSeparator orientation="vertical"/>
+
+                <div class="flex column gap15">
+                    <SingleLineInput
+                        v-model="modalInitProject.projectInfo.root_url"
+                        :auto-focus="true"
+                        class="large-input"
+                        label="URL root de l'API"
+                        placeholder="ex: http://localhost:3000/api"
+                    />
+
+                    <SwitchInput
+                        v-model="modalInitProject.projectInfo.config.use_folders_as_url"
+                        label="Utiliser les dossiers comme chemin d'URL"
+                    />
+
+                    <PathSelectInput/>
+                </div>
+            </div>
         </BaseModal>
 
         <h1>Liste de vos APIs</h1>
@@ -170,5 +208,9 @@ const showContextMenu = (e: Event, context: Project) => {
         text-align: center;
         width: 100%;
     }
+}
+
+:deep(.large-input) {
+    min-width: 300px !important;
 }
 </style>

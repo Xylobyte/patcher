@@ -14,6 +14,9 @@
     border: 0;
     box-sizing: border-box;
     font: inherit;
+}
+
+*:not(input, textarea, div[contenteditable="true"], label.switch, label.switch *) {
     user-select: none;
     -webkit-user-select: none;
     cursor: default;
