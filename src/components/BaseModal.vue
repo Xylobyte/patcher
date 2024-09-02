@@ -26,7 +26,7 @@ const handleKeydown = (e: KeyboardEvent) => {
 
 <template>
     <Teleport to="body">
-        <div class="modal-wrapper grid-center gap20" @click.self="$emit('close')">
+        <div class="modal-wrapper grid-center gap20" @mousedown.self="$emit('close')">
             <div class="modal flex column gap20 border-r">
                 <h2>{{ $props.title }}</h2>
 

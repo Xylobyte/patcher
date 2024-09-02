@@ -4,7 +4,7 @@ export interface ApiRequest {
     documentation: string,
     url: string,
     is_folder: boolean,
-    children: ApiRequest[],
+    children?: ApiRequest[],
 }
 
 export interface ProjectData {
