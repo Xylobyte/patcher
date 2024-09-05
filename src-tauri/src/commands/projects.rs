@@ -1,11 +1,11 @@
 use std::fs;
 use std::path::PathBuf;
 
-use serde::Serialize;
-
-use crate::core::configs::global_config::{get_config_path, save_config, ConfigState, RecentProject};
+use crate::core::configs::controller::{get_config_path, save_config};
+use crate::core::configs::global_config::{ConfigState, RecentProject};
 use crate::core::projects::project_data::ProjectData;
 use crate::core::projects::project_info::ProjectInfo;
+use serde::Serialize;
 
 #[derive(Debug, Serialize)]
 pub enum ProjectError {
@@ -51,14 +51,14 @@ pub async fn open_project(_state: tauri::State<'_, ConfigState>, path: String) -
     let path_buf = path_buf.join(".patcher");
     let info_path = path_buf.join("config.json");
     let data_path = path_buf.join("data.json");
-    
+
     if !info_path.exists() || !data_path.exists() {
         return Err(error_response);
     }
 
     fn read_file<T: Default + for<'d> serde::Deserialize<'d>>(path: &PathBuf, error_r: (ProjectInfo, ProjectData)) -> Result<T, (ProjectInfo, ProjectData)> {
         fs::read_to_string(path)
-            .map_err(|_| (ProjectInfo::default(), ProjectData::default()))
+            .map_err(|_| error_r.clone())
             .and_then(|content| serde_json::from_str(&content)
                 .map_err(|_| error_r))
     }

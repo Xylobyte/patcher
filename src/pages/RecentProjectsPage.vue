@@ -18,7 +18,6 @@ import {ProjectData, ProjectInfo} from "../interfaces/projects.ts"
 import BaseModal from "../components/BaseModal.vue"
 import SingleLineInput from "../components/inputs/SingleLineInput.vue";
 import LineSeparator from "../components/LineSeparator.vue";
-import SwitchInput from "../components/inputs/SwitchInput.vue";
 import PathSelectInput from "../components/inputs/PathSelectInput.vue";
 
 const projects = ref<Project[]>([])
@@ -34,7 +33,7 @@ const contextMenu = ref<{
     context: Project
 } | null>(null)
 
-const modalInitProject = ref<{path: string, projectInfo: ProjectInfo} | null>(null)
+const modalInitProject = ref<{ path: string, projectInfo: ProjectInfo } | null>(null)
 
 const refreshProjects = async () => {
     try {
@@ -118,7 +117,7 @@ const showContextMenu = (e: Event, context: Project) => {
             @close="modalInitProject = null"
         >
             <div class="flex gap10">
-                <div class="flex column gap10">
+                <div class="flex column gap15">
                     <SingleLineInput
                         v-model="modalInitProject.projectInfo.name"
                         :auto-focus="true"
@@ -142,12 +141,13 @@ const showContextMenu = (e: Event, context: Project) => {
                         placeholder="ex: http://localhost:3000/api"
                     />
 
-                    <SwitchInput
-                        v-model="modalInitProject.projectInfo.config.use_folders_as_url"
-                        label="Utiliser les dossiers comme chemin d'URL"
+                    <PathSelectInput
+                        v-model="modalInitProject.path"
+                        :is-folder="true"
+                        :path-editable="true"
+                        :show-path="true"
+                        label="Dossier du projet"
                     />
-
-                    <PathSelectInput/>
                 </div>
             </div>
         </BaseModal>

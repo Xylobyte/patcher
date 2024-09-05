@@ -17,22 +17,15 @@ const inputModel = defineModel<string>()
             :autofocus="$props.autoFocus"
             :class="$props.class"
             :placeholder="placeholder"
-            class="border-r-small"
+            class="border-r-small border"
         />
     </div>
 </template>
 
 <style lang="scss" scoped>
-label {
-    font-size: 0.8em;
-    font-weight: 300;
-    color: var(--color-font-light);
-}
-
 input {
     width: 100%;
     padding: 8px 12px;
-    border: 1px solid var(--color-background-button);
     color: var(--color-font);
     background: none;
 

@@ -1,9 +1,15 @@
+export type RequestMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE"
+
+export type JsonContent = {Json: string}
+
 export interface ApiRequest {
     id: string,
     name: string,
     documentation: string,
     url: string,
     is_folder: boolean,
+    method?: RequestMethod,
+    body?: JsonContent,
     children?: ApiRequest[],
 }
 
@@ -12,7 +18,6 @@ export interface ProjectData {
 }
 
 export interface ProjectConfig {
-    use_folders_as_url: boolean,
 }
 
 export interface ProjectInfo {

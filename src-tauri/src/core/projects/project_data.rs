@@ -47,12 +47,16 @@ impl ApiRequest {
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct ProjectData {
     pub api_tree: Vec<ApiRequest>,
+    pub server_addr: String,
+    pub root_url: String,
 }
 
 impl Default for ProjectData {
     fn default() -> Self {
         ProjectData {
             api_tree: Vec::new(),
+            server_addr: String::from("http://localhost:8000"),
+            root_url: String::from("/api"),
         }
     }
 }

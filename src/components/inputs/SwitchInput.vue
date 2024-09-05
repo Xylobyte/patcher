@@ -12,7 +12,7 @@ const checkModel = defineModel<boolean>()
     <div class="flex align-center gap10">
         <span v-if="$props.label" class="label">{{ $props.label }}</span>
 
-        <label :class="{checked: checkModel}" class="switch">
+        <label :class="{checked: checkModel}" class="switch border">
             <input v-model="checkModel" type="checkbox">
             <span class="grid-center border-r">
                 <Check v-if="checkModel" :size="13"/>
@@ -27,21 +27,20 @@ const checkModel = defineModel<boolean>()
     color: var(--color-font-light);
 }
 
+input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
 .switch {
     position: relative;
     display: inline-block;
     width: 45px;
     height: 25px;
-    border: 1px solid var(--color-background-button);
     border-radius: 15px;
     cursor: pointer;
     transition: 0.3s;
-
-    input {
-        opacity: 0;
-        width: 0;
-        height: 0;
-    }
 
     span {
         position: absolute;
