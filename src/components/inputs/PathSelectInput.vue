@@ -19,7 +19,7 @@ const pickPath = async () => {
         multiple: false,
         title: props.pickerTitle || "Choisir un dossier de projet",
         defaultPath: props.defaultPath || pathModel.value
-    }) as string
+    }) as string || pathModel.value
 }
 </script>
 

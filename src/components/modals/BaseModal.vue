@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import {onMounted, onUnmounted} from "vue"
-import BaseButton from "./buttons/BaseButton.vue"
+import BaseButton from "../buttons/BaseButton.vue"
 
 defineProps<{
     title: string

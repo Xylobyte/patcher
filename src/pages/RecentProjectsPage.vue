@@ -15,10 +15,8 @@ import {ContextMenuItem} from "../interfaces/context-menu.ts"
 import ContextMenu from "../components/ContextMenu.vue"
 import RecentProjectListItem from "../components/lists/RecentProjectListItem.vue"
 import {ProjectData, ProjectInfo} from "../interfaces/projects.ts"
-import BaseModal from "../components/BaseModal.vue"
-import SingleLineInput from "../components/inputs/SingleLineInput.vue";
-import LineSeparator from "../components/LineSeparator.vue";
-import PathSelectInput from "../components/inputs/PathSelectInput.vue";
+import BaseModal from "../components/modals/BaseModal.vue"
+import OpenProjectModal from "../components/modals/OpenProjectModal.vue";
 
 const projects = ref<Project[]>([])
 const sortedProjects = computed(() => projects.value.sort((a, b) =>
@@ -115,41 +113,9 @@ const showContextMenu = (e: Event, context: Project) => {
             v-if="!!modalInitProject"
             title="Nouveau projet"
             @close="modalInitProject = null"
+            @confirm="console.log('confirm')"
         >
-            <div class="flex gap10">
-                <div class="flex column gap15">
-                    <SingleLineInput
-                        v-model="modalInitProject.projectInfo.name"
-                        :auto-focus="true"
-                        label="Nom du projet"
-                    />
-                    <SingleLineInput
-                        v-model="modalInitProject.projectInfo.description"
-                        :auto-focus="true"
-                        label="Description du projet"
-                    />
-                </div>
-
-                <LineSeparator orientation="vertical"/>
-
-                <div class="flex column gap15">
-                    <SingleLineInput
-                        v-model="modalInitProject.projectInfo.root_url"
-                        :auto-focus="true"
-                        class="large-input"
-                        label="URL root de l'API"
-                        placeholder="ex: http://localhost:3000/api"
-                    />
-
-                    <PathSelectInput
-                        v-model="modalInitProject.path"
-                        :is-folder="true"
-                        :path-editable="true"
-                        :show-path="true"
-                        label="Dossier du projet"
-                    />
-                </div>
-            </div>
+            <OpenProjectModal :modal-init-project="modalInitProject"/>
         </BaseModal>
 
         <h1>Liste de vos APIs</h1>

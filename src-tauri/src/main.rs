@@ -6,7 +6,8 @@ use std::sync::Mutex;
 use tauri::{generate_handler, AboutMetadata, Manager, Menu, MenuItem, Submenu};
 
 use crate::commands::projects::{get_recent_projects, open_project, remove_project};
-use crate::core::configs::global_config::{init_config, Config, ConfigState};
+use crate::core::configs::controller::init_config;
+use crate::core::configs::global_config::{Config, ConfigState};
 
 mod commands;
 mod core;

@@ -24,7 +24,7 @@
 
 body {
     font-family: "comfortaa", sans-serif;
-    background-color: var(--color-background);
+    background-color: var(--color-background) !important;
     color: var(--color-font);
     font-weight: normal;
     width: 100vw;
@@ -132,6 +132,14 @@ ul {
 .grid-center {
     display: grid;
     place-items: center;
+}
+
+.pointer {
+    cursor: pointer !important;
+
+    * {
+        cursor: pointer !important;
+    }
 }
 
 h1 {
