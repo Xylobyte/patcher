@@ -3,8 +3,8 @@ import {convertISOToLocalDate} from "../../utils/dates.ts"
 import SmallButton from "../buttons/SmallButton.vue"
 import {Project} from "../../interfaces/configs.ts"
 import {EllipsisVertical, FolderSearch} from "lucide-vue-next"
-import {message} from "@tauri-apps/api/dialog"
-import {open} from '@tauri-apps/api/shell'
+import {message} from "@tauri-apps/plugin-dialog"
+import {open} from '@tauri-apps/plugin-shell'
 
 const props = defineProps<{
     project: Project

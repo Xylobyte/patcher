@@ -1,38 +1,15 @@
 {
+    "$schema": "https://schema.tauri.app/config/2",
+    "productName": "Patcher",
+    "version": "0.1.0-alpha1",
+    "identifier": "com.xylobyte.patcher",
     "build": {
         "beforeDevCommand": "npm run dev",
+        "devUrl": "http://localhost:1420",
         "beforeBuildCommand": "npm run build",
-        "devPath": "http://localhost:1420",
-        "distDir": "../dist"
+        "frontendDist": "../dist"
     },
-    "package": {
-        "productName": "patcher",
-        "version": "0.1.0-alpha1"
-    },
-    "tauri": {
-        "allowlist": {
-            "all": false,
-            "shell": {
-                "all": false,
-                "open": "^(\\/|[a-zA-Z]:\\\\).*"
-            },
-            "window": {
-                "all": false,
-                "startDragging": true,
-                "maximize": true,
-                "unmaximize": true
-            },
-            "path": {
-                "all": true
-            },
-            "dialog": {
-                "message": true,
-                "open": true
-            },
-            "clipboard": {
-                "writeText": true
-            }
-        },
+    "app": {
         "windows": [
             {
                 "label": "main",
@@ -47,18 +24,17 @@
         ],
         "security": {
             "csp": null
-        },
-        "bundle": {
-            "active": true,
-            "targets": "all",
-            "identifier": "com.xylobyte.patcher",
-            "icon": [
-                "icons/32x32.png",
-                "icons/128x128.png",
-                "icons/128x128@2x.png",
-                "icons/icon.icns",
-                "icons/icon.ico"
-            ]
         }
+    },
+    "bundle": {
+        "active": true,
+        "targets": "all",
+        "icon": [
+            "icons/32x32.png",
+            "icons/128x128.png",
+            "icons/128x128@2x.png",
+            "icons/icon.icns",
+            "icons/icon.ico"
+        ]
     }
 }

@@ -1,17 +1,18 @@
 use crate::core::configs::global_config::{Config, GLOBAL_CONFIG_FILE};
 use std::path::PathBuf;
 use std::{fs, io};
+use tauri::{AppHandle, Manager};
 
-pub fn get_config_path(app_handle: &tauri::AppHandle) -> PathBuf {
+pub fn get_config_path(app_handle: &AppHandle) -> PathBuf {
     let mut path = app_handle
-        .path_resolver()
+        .path()
         .app_config_dir()
         .expect("Could not get app config dir");
     path.push(GLOBAL_CONFIG_FILE);
     path
 }
 
-pub fn init_config(app_handle: &tauri::AppHandle) -> Result<Config, io::Error> {
+pub fn init_config(app_handle: &AppHandle) -> Result<Config, io::Error> {
     let config_path = get_config_path(app_handle);
 
     let config = if !config_path.exists() {

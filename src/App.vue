@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import DragHeader from "./components/DragHeader.vue"
-import NotificationsCenter from "./components/NotificationsCenter.vue"
+import NotificationsCenter from "./components/NotificationsCenter.vue";
+import DragHeader from "./components/DragHeader.vue";
 </script>
 
 <template>

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import BaseButton from "../buttons/BaseButton.vue";
-import {open as pickFolder} from "@tauri-apps/api/dialog"
+import {open as pickFolder} from "@tauri-apps/plugin-dialog"
 
 const props = defineProps<{
     label?: string
