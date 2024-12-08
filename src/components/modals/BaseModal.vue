@@ -19,7 +19,6 @@ onUnmounted(() => {
 })
 
 const handleKeydown = (e: KeyboardEvent) => {
-    console.log(e)
     if (e.key === "Escape") emit('close')
 }
 </script>

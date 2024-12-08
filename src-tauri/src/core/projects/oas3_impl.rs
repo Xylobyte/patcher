@@ -4,7 +4,7 @@ use serde_json::Value;
 use std::collections::BTreeMap;
 use time::OffsetDateTime;
 
-trait OpenApiV3SpecExt {
+pub trait OpenApiV3SpecExt {
     fn new(p_version: String, title: String, version: String, server: String) -> Self;
 }
 
@@ -15,13 +15,13 @@ impl OpenApiV3SpecExt for OpenApiV3Spec {
             .format(&time::format_description::well_known::Rfc3339)
             .unwrap();
         info_ext.insert(
-            "x-last-modified".to_string(),
+            "last-modified".to_string(),
             Value::String(now.to_string()),
         );
 
         let mut oas_ext = BTreeMap::new();
-        oas_ext.insert("x-patcher".to_string(), Value::Bool(true));
-        oas_ext.insert("x-patcher-version".to_string(), Value::String(p_version));
+        oas_ext.insert("patcher".to_string(), Value::Bool(true));
+        oas_ext.insert("patcher-version".to_string(), Value::String(p_version));
 
         OpenApiV3Spec {
             openapi: "3.1.0".to_string(),

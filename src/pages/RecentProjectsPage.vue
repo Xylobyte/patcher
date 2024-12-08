@@ -1,78 +1,77 @@
 <script lang="ts" setup>
-import {computed, onMounted, onUnmounted, ref} from "vue"
-import {Project} from "../interfaces/configs.ts"
-import {homeDir} from "@tauri-apps/api/path"
-import {invoke} from "@tauri-apps/api/core"
-import {open as pickFolder} from "@tauri-apps/plugin-dialog"
-import {writeText} from "@tauri-apps/plugin-clipboard-manager"
-import {emit} from "@tauri-apps/api/event"
-import {SEND_NOTIFICATION} from "../utils/data/events-names.ts"
-import {AddNotification} from "../interfaces/notifications.ts"
-import BaseButton from "../components/buttons/BaseButton.vue"
-import CustomScrollbar from "../components/CustomScrollbar.vue"
-import {contextMenuItems} from "../utils/data/context-menu-items.ts"
-import {ContextMenuItem} from "../interfaces/context-menu.ts"
-import ContextMenu from "../components/ContextMenu.vue"
-import RecentProjectListItem from "../components/lists/RecentProjectListItem.vue"
-import {ProjectData, ProjectInfo} from "../interfaces/projects.ts"
-import BaseModal from "../components/modals/BaseModal.vue"
-import OpenProjectModal from "../components/modals/OpenProjectModal.vue";
+import {computed, onMounted, onUnmounted, ref} from "vue";
+import {Project} from "../interfaces/configs.ts";
+import {homeDir} from "@tauri-apps/api/path";
+import {invoke} from "@tauri-apps/api/core";
+import {open as pickFolder} from "@tauri-apps/plugin-dialog";
+import {writeText} from "@tauri-apps/plugin-clipboard-manager";
+import {emit} from "@tauri-apps/api/event";
+import {SEND_NOTIFICATION} from "../utils/data/events-names.ts";
+import {AddNotification} from "../interfaces/notifications.ts";
+import BaseButton from "../components/buttons/BaseButton.vue";
+import CustomScrollbar from "../components/CustomScrollbar.vue";
+import {contextMenuItems} from "../utils/data/context-menu-items.ts";
+import {ContextMenuItem} from "../interfaces/context-menu.ts";
+import ContextMenu from "../components/ContextMenu.vue";
+import RecentProjectListItem from "../components/lists/RecentProjectListItem.vue";
+import NewProjectModal from "../components/modals/NewProjectModal.vue";
+import {OpenAPIObject} from "../interfaces/oas3.ts";
 
-const projects = ref<Project[]>([])
+const projects = ref<Project[]>([]);
 const sortedProjects = computed(() => projects.value.sort((a, b) =>
     new Date(b.last_opened).getTime() - new Date(a.last_opened).getTime()
-))
+));
 
-const homePath = ref<string>("null")
+const homePath = ref<string>("null");
 const contextMenu = ref<{
     x: number
     y: number
     items: ContextMenuItem[]
     context: Project
-} | null>(null)
+} | null>(null);
 
-const modalInitProject = ref<{ path: string, projectInfo: ProjectInfo } | null>(null)
+const modalInitProject = ref<{ path: string, projectInfo: OpenAPIObject } | null>(null);
 
 const refreshProjects = async () => {
     try {
-        projects.value = await invoke<Project[]>('get_recent_projects')
+        projects.value = await invoke<Project[]>('get_recent_projects');
     } catch (error) {
-        console.error(error)
+        console.error(error);
     }
-}
+};
 
 onMounted(async () => {
-    homePath.value = await homeDir()
-    await refreshProjects()
+    homePath.value = await homeDir();
+    await refreshProjects();
 
-    window.addEventListener('focus', refreshProjects)
-})
+    window.addEventListener('focus', refreshProjects);
+});
 onUnmounted(() => {
-    window.removeEventListener('focus', refreshProjects)
-})
+    window.removeEventListener('focus', refreshProjects);
+});
 
 const execAction = async (action: string) => {
     if (contextMenu.value?.context) {
         switch (action) {
             case "copyPath":
-                await writeText(contextMenu.value?.context.path)
+                await writeText(contextMenu.value?.context.path);
                 emit(SEND_NOTIFICATION, {
                     message: "Le chemin a bien été copié",
                     type: "info"
-                } as AddNotification)
-                break
+                } as AddNotification);
+                break;
             case "removeFromList":
-                projects.value = await invoke<Project[]>('remove_project', {path: contextMenu.value?.context.path})
+                projects.value = await invoke<Project[]>('remove_project', {path: contextMenu.value?.context.path});
                 emit(SEND_NOTIFICATION, {
                     message: "Le projet a bien été retiré de la liste",
                     type: "info"
-                } as AddNotification)
-                break
+                } as AddNotification);
+                break;
         }
     }
 
-    contextMenu.value = null
-}
+    contextMenu.value = null;
+};
 
 const openFolder = async () => {
     const select = await pickFolder({
@@ -80,43 +79,57 @@ const openFolder = async () => {
         multiple: false,
         title: "Choisir un dossier de projet",
         defaultPath: homePath.value
-    })
+    });
 
-    if (select) await openProject(select as string)
-}
+    if (select) await openProject(select as string);
+};
 
 const openProject = async (p: string) => {
     try {
-        await invoke<void>('open_project', {path: p})
+        await invoke<void>('open_project', {path: p});
     } catch (e) {
+        const obj = e as OpenAPIObject;
         modalInitProject.value = {
             path: p,
-            projectInfo: (e as [ProjectInfo, ProjectData])[0]
-        }
+            projectInfo: obj
+        };
     }
-}
+};
+
+const createProject = async (title: string, desc: string, serverUrl: string, path: string) => {
+    if (!modalInitProject.value) return;
+    const data = modalInitProject.value.projectInfo;
+    data.info.title = title;
+    data.info.description = desc;
+    if (data.servers?.[0].url) {
+        data.servers[0].url = serverUrl;
+    } else {
+        data.servers = [{
+            url: serverUrl,
+        }];
+    }
+    await invoke<void>('create_project', {data});
+};
 
 const showContextMenu = (e: Event, context: Project) => {
-    const elBounding = (e.currentTarget as HTMLElement).getBoundingClientRect()
+    const elBounding = (e.currentTarget as HTMLElement).getBoundingClientRect();
     contextMenu.value = {
         x: elBounding.left + elBounding.width / 2,
         y: elBounding.top + elBounding.height / 2,
         items: contextMenuItems,
         context: context
-    }
-}
+    };
+};
 </script>
 
 <template>
     <main id="recent-projects" class="flex column align-center justify-center gap30">
-        <BaseModal
+        <NewProjectModal
             v-if="!!modalInitProject"
-            title="Nouveau projet"
+            :modal-init-project="modalInitProject"
             @close="modalInitProject = null"
-            @confirm="console.log('confirm')"
-        >
-            <OpenProjectModal :modal-init-project="modalInitProject"/>
-        </BaseModal>
+            @confirm="createProject"
+        />
 
         <h1>Liste de vos APIs</h1>
 
