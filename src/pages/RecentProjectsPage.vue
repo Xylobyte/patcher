@@ -108,7 +108,7 @@ const createProject = async (title: string, desc: string, serverUrl: string, pat
             url: serverUrl,
         }];
     }
-    await invoke<void>('create_project', {data});
+    await invoke<void>('create_project', {data, path});
 };
 
 const showContextMenu = (e: Event, context: Project) => {
